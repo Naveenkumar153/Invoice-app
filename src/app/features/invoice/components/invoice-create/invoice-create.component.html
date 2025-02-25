@@ -1,0 +1,122 @@
+
+<form [formGroup]="invoiceForm" (ngSubmit)="SaveInvoice()">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>Create Invoice</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <mat-form-field class="mat-half-width">
+                <mat-label>Invoice Number</mat-label>
+                <input matInput formControlName="invoiceNumber" required>
+            </mat-form-field>
+            <mat-form-field class="mat-half-width">
+                <mat-label>Invoice Date</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="invoiceDate" />
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+            <!-- <mat-form-field class="mat-half-width">
+                <mat-label>Customer Name</mat-label>
+                <mat-select formControlName="customerName">
+
+                </mat-select>
+            </mat-form-field> -->
+            <mat-form-field class="mat-half-width">
+                <mat-label>Customer</mat-label>
+                <mat-select formControlName="customerId" (selectionChange)="onCustomerChange($event)">
+                    @for (customer of customerList$ | async; track customer.id) {
+                        <mat-option [value]="customer.id">
+                            {{ customer.name }}
+                        </mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field class="mat-half-width">
+                <mat-label>Tax</mat-label>
+                <mat-select formControlName="taxCode" (selectionChange)="onTaxChange($event)">
+                    @for (tax of taxList$ | async; track tax.id) {
+                        <mat-option [value]="tax.id">
+                            {{ tax.id }}
+                        </mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field class="mat-full-width">
+                <mat-label>Delivery Address</mat-label>
+                <textarea matInput formControlName="address"></textarea>
+            </mat-form-field>
+
+            <mat-card class="mat-mdc-card">
+                <mat-card-header>
+                    <mat-card-title>Product Section</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <!-- <app-invoice-item></app-invoice-item> -->
+                    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+                        <!--- Note that these columns can be defined in any order.
+                              The actual rendered columns are set as a property on the row definition" -->
+                      
+                        <!-- Position Column -->
+                        <ng-container matColumnDef="no">
+                          <th mat-header-cell *matHeaderCellDef> Sl.No </th>
+                          <td mat-cell *matCellDef="let element"> {{element.no}} </td>
+                        </ng-container>
+                      
+                        <!-- Name Column -->
+                        <ng-container matColumnDef="ProductName">
+                          <th mat-header-cell *matHeaderCellDef> Product </th>
+                          <td mat-cell *matCellDef="let element"> {{element.ProductName}} </td>
+                        </ng-container>
+                      
+                        <!-- Weight Column -->
+                        <ng-container matColumnDef="qty">
+                          <th mat-header-cell *matHeaderCellDef> Qty </th>
+                          <td mat-cell *matCellDef="let element"> {{element.qty}} </td>
+                        </ng-container>
+                      
+                        <!-- Symbol Column -->
+                        <ng-container matColumnDef="price">
+                          <th mat-header-cell *matHeaderCellDef> Price </th>
+                          <td mat-cell *matCellDef="let element"> {{element.price}} </td>
+                        </ng-container>
+
+                        <!-- Symbol Column -->
+                        <ng-container matColumnDef="total">
+                          <th mat-header-cell *matHeaderCellDef> Total </th>
+                          <td mat-cell *matCellDef="let element"> {{element.total}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="action">
+                            <th mat-header-cell *matHeaderCellDef> Action </th>
+                            <td mat-cell *matCellDef="let element">
+                              <button mat-button color="warn">Remove</button>
+                            </td>
+                        </ng-container>
+                      
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                      </table>
+                </mat-card-content>
+            </mat-card>
+            <mat-card >
+                <mat-card-content>
+                    <mat-list>
+                        <mat-list-item>
+                            Sub Total: <strong>{{ total }}</strong>
+                        </mat-list-item>
+                        <mat-divider/>
+                        <mat-list-item>
+                            Tax: <strong>{{ total }}</strong>
+                        </mat-list-item>
+                        <mat-divider/>
+                    </mat-list>
+                </mat-card-content>
+            </mat-card>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-flat-button color="primary">Save</button>
+            <button mat-flat-button color="warn" (click)="onCancel()">Cancel</button>
+        </mat-card-actions>
+    </mat-card>
+</form>

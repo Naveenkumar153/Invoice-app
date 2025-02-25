@@ -1,0 +1,83 @@
+{
+    "customer":[
+        {
+            "id":"1",
+            "name":"John Doe",
+            "address":"201 Main St.",
+            "taxCode":"Exclusive"
+        },
+        {
+            "id":"2",
+            "name":"Olivia",
+            "address":"15 Maple St.",
+            "taxCode":"Inclusive"
+        },
+        {
+            "id":"3",
+            "name":"Amelia",
+            "address":"104 Elm St.",
+            "taxCode":"Exclusive"
+        },
+        {
+            "id":"4",
+            "name":"Sophia",
+            "address":"4th Street",
+            "taxCode":"Zero"
+        }
+    ],
+    "product":[
+        {
+            "id":"1",
+            "name":"Laptop",
+            "description":"Dell Inspiron 15",
+            "price":1000,
+            "status":true
+        },
+        {
+            "id":"2",
+            "name":"Phone",
+            "description":"iPhone 13",
+            "price":800,
+            "status":true
+        },
+        {
+            "id":"3",
+            "name":"Tablet",
+            "description":"iPad Pro",
+            "price":1200,
+            "status":true
+        },
+        {
+            "id":"4",
+            "name":"Monitor",
+            "description":"LG Monitor",
+            "price":500,
+            "status":false
+        },
+        {
+            "id":"5",
+            "name":"Keyboard",
+            "description":"Logitech Keyboard",
+            "price":100,
+            "status":true
+        }
+    ],
+    "invoice":[],
+    "tax":[
+        {
+            "id":"Inclusive",
+            "type":"I",
+            "percentage":7
+        },
+        {
+            "id":"Exclusive",
+            "type":"E",
+            "percentage":10
+        },
+        {
+            "id":"Zero",
+            "type":"Z",
+            "percentage":0
+        }
+    ]
+}
