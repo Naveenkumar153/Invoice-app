@@ -99,13 +99,19 @@ export class InvoiceCreateComponent implements OnInit, OnDestroy {
     console.log(event);
     this.invoiceService.getSingleCustomer(event.value).subscribe((data:Customer)=>{
       this.invoiceForm.patchValue({
+        customerName: data.name,
         address: data.address,
+        taxCode: data.textCode
       });
     });
   };
 
   onTaxChange(event:MatSelectChange):void{
     console.log(event);
+  };
+
+  addRow():void{
+    
   }
  
 
