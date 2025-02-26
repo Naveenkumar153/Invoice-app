@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { ReactiveFormsModule, FormsModule, FormBuilder, Validators } from '@angular/forms';
-import { MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ReactiveFormsModule, FormsModule, FormBuilder, Validators, FormArray } from '@angular/forms';
+import { MatNativeDateModule, MatOptionSelectionChange, provideNativeDateAdapter } from '@angular/material/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -10,7 +10,7 @@ import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { InvoiceItemComponent } from '../../containers/invoice-item/invoice-item.component';
-import {MatTableModule} from '@angular/material/table';
+import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
 import { Router } from '@angular/router';
@@ -22,7 +22,7 @@ import { InvoiceService } from '../../services/invoice.service';
 
 
 const ELEMENT_DATA = [
-  {no: 1, ProductName: 'gold', qty: 2, price: 10, total: 20 },
+  {productId: 1, productName: 'gold', qty: 2, price: 10, total: 20 },
  
 ];
 @Component({
@@ -42,17 +42,20 @@ const ELEMENT_DATA = [
 export class InvoiceCreateComponent implements OnInit, OnDestroy {
 
   
-  constructor(private fb:FormBuilder, private router:Router, private invoiceService:InvoiceService) { 
+  constructor(private fb:FormBuilder, private router:Router, private invoiceService:InvoiceService, private cdRef:ChangeDetectorRef) { 
   }
 
-  displayedColumns: string[] = ['no', 'ProductName', 'qty', 'price','total','action'];
-  dataSource = ELEMENT_DATA;
+  displayedColumns: string[] = ['productId', 'productName', 'qty', 'price','total','action'];
+  dataSource = new MatTableDataSource<any>([]);;
   invoiceForm: any;
   total:number = 10;
   customerList$!: Observable<Customer[]>;
   taxList$!: Observable<Tax[]>;
   productList$!: Observable<Product[]>;
-  
+  invoiceProduct!:FormArray<any>;
+  get invoiceProductsArray(){
+    return this.invoiceForm.get('products') as FormArray;
+  }
 
   ngOnInit(): void {
     this.createForm();
@@ -103,6 +106,7 @@ export class InvoiceCreateComponent implements OnInit, OnDestroy {
         address: data.address,
         taxCode: data.textCode
       });
+      this.addProduct();
     });
   };
 
@@ -110,9 +114,32 @@ export class InvoiceCreateComponent implements OnInit, OnDestroy {
     console.log(event);
   };
 
-  addRow():void{
-    
+  onProductChange(event:MatOptionSelectionChange<string>,i:any):void{
+    console.log(event.source.value,i);
   }
+
+  addProduct():void{
+    this.invoiceProduct = this.invoiceForm.get('products') as FormArray;
+    this.invoiceProduct.push(this.generateRow());
+    this.dataSource.data = this.invoiceProductsArray.controls;
+    this.cdRef.markForCheck();
+  };
+
+  generateRow(){
+    return this.fb.group({
+      productId:['',[Validators.required]],
+      productName:[''],
+      qty:[1],
+      price:[0],
+      total:['',{value:0, disabled:true}]
+    });
+  };
+
+  removeProduct(index: number): void {
+    this.invoiceProductsArray.removeAt(index);
+    this.dataSource.data = this.invoiceProductsArray.controls;
+  }
+  
  
 
 }
