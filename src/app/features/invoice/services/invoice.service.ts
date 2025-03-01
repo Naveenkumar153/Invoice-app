@@ -14,8 +14,8 @@ export class InvoiceService {
     return this.http.get<Tax[]>("http://localhost:4000/tax");
   };
 
-  getSingleTax(){
-    return this.http.get<Tax[]>("http://localhost:4000/tax");
+  getSingleTax(id:string){
+    return this.http.get<Tax>(`http://localhost:4000/tax/${id}`);
   };
 
   getAllProduct(){
@@ -23,7 +23,7 @@ export class InvoiceService {
   };
 
   getSingleProduct(productId:string){
-    return this.http.get<Product>('http://localhost:4000/product' + productId);
+    return this.http.get<Product>(`http://localhost:4000/product/${productId}`);
   };
 
   getAllCustomer(){
@@ -39,7 +39,7 @@ export class InvoiceService {
   };
 
   getSingleInvoice(invoiceId:string){
-    return this.http.get<Invoice>('http://localhost:4000/invoice' + invoiceId);
+    return this.http.get<Invoice>(`http://localhost:4000/invoice/${invoiceId}`);
   };
 
 }

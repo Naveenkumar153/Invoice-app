@@ -3,4 +3,5 @@ export interface Customer {
     name: string, 
     address: string,
     textCode:string,
+    taxId:string
 }

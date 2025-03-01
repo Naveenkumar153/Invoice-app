@@ -4,25 +4,29 @@
             "id":"1",
             "name":"John Doe",
             "address":"201 Main St.",
-            "taxCode":"Exclusive"
+            "taxCode":"Exclusive",
+            "taxId":"2"
         },
         {
             "id":"2",
             "name":"Olivia",
             "address":"15 Maple St.",
-            "taxCode":"Inclusive"
+            "taxCode":"Inclusive",
+            "taxId":"1"
         },
         {
             "id":"3",
             "name":"Amelia",
             "address":"104 Elm St.",
-            "taxCode":"Exclusive"
+            "taxCode":"Exclusive",
+            "taxId":"2"
         },
         {
             "id":"4",
             "name":"Sophia",
             "address":"4th Street",
-            "taxCode":"Zero"
+            "taxCode":"Zero",
+            "taxId":"3"
         }
     ],
     "product":[
@@ -65,17 +69,20 @@
     "invoice":[],
     "tax":[
         {
-            "id":"Inclusive",
+            "id":"1",
+            "name":"Inclusive",
             "type":"I",
             "percentage":7
         },
         {
-            "id":"Exclusive",
+            "id":"2",
+            "name":"Exclusive",
             "type":"E",
             "percentage":10
         },
         {
-            "id":"Zero",
+            "id":"3",
+            "name":"Zero",
             "type":"Z",
             "percentage":0
         }
