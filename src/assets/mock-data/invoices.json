@@ -1,90 +1,137 @@
 {
-    "customer":[
+  "customer": [
+    {
+      "id": "1",
+      "name": "John Doe",
+      "address": "201 Main St.",
+      "taxCode": "Exclusive",
+      "taxId": "2"
+    },
+    {
+      "id": "2",
+      "name": "Olivia",
+      "address": "15 Maple St.",
+      "taxCode": "Inclusive",
+      "taxId": "1"
+    },
+    {
+      "id": "3",
+      "name": "Amelia",
+      "address": "104 Elm St.",
+      "taxCode": "Exclusive",
+      "taxId": "2"
+    },
+    {
+      "id": "4",
+      "name": "Sophia",
+      "address": "4th Street",
+      "taxCode": "Zero",
+      "taxId": "3"
+    }
+  ],
+  "product": [
+    {
+      "id": "1",
+      "name": "Laptop",
+      "description": "Dell Inspiron 15",
+      "price": 1000,
+      "status": true
+    },
+    {
+      "id": "2",
+      "name": "Phone",
+      "description": "iPhone 13",
+      "price": 800,
+      "status": true
+    },
+    {
+      "id": "3",
+      "name": "Tablet",
+      "description": "iPad Pro",
+      "price": 1200,
+      "status": true
+    },
+    {
+      "id": "4",
+      "name": "Monitor",
+      "description": "LG Monitor",
+      "price": 500,
+      "status": false
+    },
+    {
+      "id": "5",
+      "name": "Keyboard",
+      "description": "Logitech Keyboard",
+      "price": 100,
+      "status": true
+    }
+  ],
+  "invoice": [
+    {
+      "id": "c102",
+      "invoiceNumber": "12345",
+      "invoiceDate": "2025-03-02T10:00:24.944Z",
+      "customerId": "2",
+      "customerName": "Olivia",
+      "taxCode": "2",
+      "address": "15 Maple St.",
+      "total": 3600,
+      "tax": 360,
+      "netTotal": 3960,
+      "products": [
         {
-            "id":"1",
-            "name":"John Doe",
-            "address":"201 Main St.",
-            "taxCode":"Exclusive",
-            "taxId":"2"
+          "productId": "1",
+          "productName": "Laptop",
+          "qty": 1,
+          "price": 1000
         },
         {
-            "id":"2",
-            "name":"Olivia",
-            "address":"15 Maple St.",
-            "taxCode":"Inclusive",
-            "taxId":"1"
+          "productId": "2",
+          "productName": "Phone",
+          "qty": 1,
+          "price": 800
         },
         {
-            "id":"3",
-            "name":"Amelia",
-            "address":"104 Elm St.",
-            "taxCode":"Exclusive",
-            "taxId":"2"
+          "productId": "3",
+          "productName": "Tablet",
+          "qty": 1,
+          "price": 1200
         },
         {
-            "id":"4",
-            "name":"Sophia",
-            "address":"4th Street",
-            "taxCode":"Zero",
-            "taxId":"3"
+          "productId": "4",
+          "productName": "Monitor",
+          "qty": 1,
+          "price": 500
+        },
+        {
+          "productId": "5",
+          "productName": "Keyboard",
+          "qty": 1,
+          "price": 100
         }
-    ],
-    "product":[
-        {
-            "id":"1",
-            "name":"Laptop",
-            "description":"Dell Inspiron 15",
-            "price":1000,
-            "status":true
-        },
-        {
-            "id":"2",
-            "name":"Phone",
-            "description":"iPhone 13",
-            "price":800,
-            "status":true
-        },
-        {
-            "id":"3",
-            "name":"Tablet",
-            "description":"iPad Pro",
-            "price":1200,
-            "status":true
-        },
-        {
-            "id":"4",
-            "name":"Monitor",
-            "description":"LG Monitor",
-            "price":500,
-            "status":false
-        },
-        {
-            "id":"5",
-            "name":"Keyboard",
-            "description":"Logitech Keyboard",
-            "price":100,
-            "status":true
-        }
-    ],
-    "invoice":[],
-    "tax":[
-        {
-            "id":"1",
-            "name":"Inclusive",
-            "type":"I",
-            "percentage":7
-        },
-        {
-            "id":"2",
-            "name":"Exclusive",
-            "type":"E",
-            "percentage":10
-        },
-        {
-            "id":"3",
-            "name":"Zero",
-            "type":"Z",
-            "percentage":0
-        }
-    ]
+      ],
+      "taxPercentage": 10,
+      "taxType": "E"
+    }
+  ],
+  "tax": [
+    {
+      "id": "1",
+      "name": "Inclusive",
+      "type": "I",
+      "percentage": 7
+    },
+    {
+      "id": "2",
+      "name": "Exclusive",
+      "type": "E",
+      "percentage": 10
+    },
+    {
+      "id": "3",
+      "name": "Zero",
+      "type": "Z",
+      "percentage": 0
+    }
+  ]
 }
