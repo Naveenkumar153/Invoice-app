@@ -4,7 +4,7 @@ export interface Invoice{
     id:number,
     customerId:string,
     customerName:string,
-    deliveryAddress:string,
+    address:string,
     invoiceDate:Date,
     taxCode:string,
     taxPercentage:number,

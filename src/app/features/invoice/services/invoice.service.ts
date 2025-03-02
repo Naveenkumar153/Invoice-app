@@ -38,7 +38,7 @@ export class InvoiceService {
     return this.http.get<Invoice[]>('http://localhost:4000/invoice');
   };
 
-  getSingleInvoice(invoiceId:string){
+  getSingleInvoice(invoiceId:string,){
     return this.http.get<Invoice>(`http://localhost:4000/invoice/${invoiceId}`);
   };
 
@@ -46,8 +46,8 @@ export class InvoiceService {
     return this.http.post<Invoice>('http://localhost:4000/invoice',invoice);
   };
 
-  updateInvoice(invoice:Invoice){
-    return this.http.put<Invoice>(`http://localhost:4000/invoice/${invoice.id}`,invoice);
+  updateInvoice(invoiceId: string,invoice:Invoice){
+    return this.http.put<Invoice>(`http://localhost:4000/invoice/${invoiceId}`,invoice);
   };
 
   deleteInvoice(invoiceId:string){

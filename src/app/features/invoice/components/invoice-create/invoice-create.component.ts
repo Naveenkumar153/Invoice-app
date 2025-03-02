@@ -13,13 +13,14 @@ import { InvoiceItemComponent } from '../../containers/invoice-item/invoice-item
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, combineLatest, map, Observable, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { Customer } from '../../model/customer.model';
 import { Tax } from '../../model/tax.model';
 import { Product } from '../../model/product.model';
 import { InvoiceService } from '../../services/invoice.service';
 import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
+import { Invoice } from '../../model/invoice.model';
 
 @Component({
   selector: 'app-invoice-create',
@@ -38,11 +39,11 @@ import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
 export class InvoiceCreateComponent implements OnInit, OnDestroy {
 
   
-  constructor(private fb:FormBuilder, private router:Router, private invoiceService:InvoiceService, private cdRef:ChangeDetectorRef, private snackBar:MatSnackBar) { 
+  constructor(private fb:FormBuilder, private router:Router, private invoiceService:InvoiceService, private cdRef:ChangeDetectorRef, private snackBar:MatSnackBar, private activeRoute: ActivatedRoute) { 
   }
 
   displayedColumns: string[] = ['productId', 'productName', 'qty', 'price','total','action'];
-  dataSource = new MatTableDataSource<any>([]);;
+  dataSource = new MatTableDataSource<any>([]);
   invoiceForm!: FormGroup<any>;
   subTotal:number = 0;
   customerList$!: Observable<Customer[]>;
@@ -57,12 +58,55 @@ export class InvoiceCreateComponent implements OnInit, OnDestroy {
     tax: 0,
     netTotal: 0
   };
+  invoiceId:string | null = null;
 
   get invoiceProductsArray(){
     return this.invoiceForm.get('products') as FormArray;
   }
 
   ngOnInit(): void {
+    this.activeRoute.paramMap.pipe(
+        switchMap(params => {
+          this.invoiceId = params.get('id')!;
+          if(this.invoiceId){
+            return this.invoiceService.getSingleInvoice(this.invoiceId);
+          }else{
+             return of(null);
+          }
+        }),
+    ).subscribe((res:Invoice | null) => {
+      if(res){
+        this.invoiceForm.patchValue({
+          invoiceNumber: res.id, // Assuming id is the invoice number
+          invoiceDate: new Date(res.invoiceDate), 
+          customerId: res.customerId,
+          customerName: res.customerName,
+          taxCode: res.taxCode,
+          address: res.address,
+          total: res.total,
+          tax: res.tax,
+          netTotal: res.netTotal,
+        });
+        const productsArray = this.invoiceProductsArray;
+        productsArray.clear(); // Clear existing data
+        res.products.forEach((product: any) => {
+          this.addProduct();
+          productsArray.push(this.fb.group({
+            productId: product.productId,
+            productName: product.productName,
+            qty: product.qty,
+            price: product.price,
+            total: product.total,
+          }));
+        });
+        this.currentInvoiceTax.percentage = res.taxPercentage;
+        this.currentInvoiceTax.type = res.taxType;
+        this.summary.netTotal = +res.netTotal;
+        this.summary.tax = res.tax;
+        this.summary.total = res.total;
+        this.cdRef.detectChanges();
+      }
+    });
     this.createForm();
     this.initialData();
   };
@@ -74,7 +118,7 @@ export class InvoiceCreateComponent implements OnInit, OnDestroy {
 
   createForm():void{
     this.invoiceForm = this.fb.group({
-      invoiceNumber: ['',{ disabled:true }],
+      invoiceNumber: [{value:'', disabled:true}],
       invoiceDate: [new Date(),[Validators.required]],
       customerId:['',[Validators.required]],
       customerName:[''],
@@ -96,6 +140,7 @@ export class InvoiceCreateComponent implements OnInit, OnDestroy {
   };
 
   SaveInvoice():void{
+
     if(this.invoiceForm.invalid){
       this.snackBar.open('Please fill all the required fields','Close', {
         duration          : 2000,
@@ -110,14 +155,26 @@ export class InvoiceCreateComponent implements OnInit, OnDestroy {
           invoice.netTotal      = this.summary.netTotal;
           invoice.taxPercentage = this.currentInvoiceTax.percentage;
           invoice.taxType       = this.currentInvoiceTax.type;
-    this.invoiceService.createInvoice(invoice).pipe(takeUntil(this.destroy$)).subscribe((data) => {
-      this.snackBar.open('Invoice created successfully','Close',{
-        duration          : 2000,
-        horizontalPosition: 'right',
-        verticalPosition  : 'top',
+
+    if(this.invoiceId){
+      this.invoiceService.updateInvoice(this.invoiceId,invoice).pipe(takeUntil(this.destroy$)).subscribe((data) => {
+        this.snackBar.open('Invoice updated successfully','Close',{
+          duration          : 2000,
+          horizontalPosition: 'right',
+          verticalPosition  : 'top',
+        });
+        this.router.navigate(['/invoice']);
       });
-      this.router.navigate(['/invoice']);
-    });
+    }else{
+      this.invoiceService.createInvoice(invoice).pipe(takeUntil(this.destroy$)).subscribe((data) => {
+        this.snackBar.open('Invoice created successfully','Close',{
+          duration          : 2000,
+          horizontalPosition: 'right',
+          verticalPosition  : 'top',
+        });
+        this.router.navigate(['/invoice']);
+      });
+    }
   };
 
   initialData():void{
@@ -151,10 +208,6 @@ export class InvoiceCreateComponent implements OnInit, OnDestroy {
     )
     .subscribe((result) => {
       const [customer, tax, taxList]: [Customer, Tax, Tax[]] = result as [Customer, Tax, Tax[]];
-
-      console.log('Customer:', customer);
-      console.log('Tax:', tax);
-      console.log('Tax List:', taxList);
       this.summary.tax = tax.percentage;
       this.invoiceForm.patchValue({
         customerName: customer?.name || '',
@@ -166,7 +219,6 @@ export class InvoiceCreateComponent implements OnInit, OnDestroy {
   };
 
   onTaxChange(event:MatSelectChange):void{
-    console.log(event);
     this.invoiceService.getSingleTax(event.value)
     .pipe(
       takeUntil(this.destroy$), 
@@ -204,18 +256,25 @@ export class InvoiceCreateComponent implements OnInit, OnDestroy {
 
   addProduct():void{
     this.invoiceProducts = this.invoiceForm.get('products') as FormArray;
-    if(this.invoiceForm.get('customerId')?.value){
+    if(this.invoiceId){
       this.invoiceProducts.push(this.generateRow());
       this.dataSource.data = this.invoiceProductsArray.controls;
       this.summaryCalculation();
       this.cdRef.markForCheck();
     }else{
-      this.snackBar.open('Please select a customer first','Close',{
-        duration: 2000,
-        horizontalPosition:'right',
-        verticalPosition:'top',
-      });
-    };
+      if(this.invoiceForm.get('customerId')?.value){
+        this.invoiceProducts.push(this.generateRow());
+        this.dataSource.data = this.invoiceProductsArray.controls;
+        this.summaryCalculation();
+        this.cdRef.markForCheck();
+      }else{
+        this.snackBar.open('Please select a customer first','Close',{
+          duration: 2000,
+          horizontalPosition:'right',
+          verticalPosition:'top',
+        });
+      };
+    }
   };
 
   generateRow(){

@@ -1,0 +1,75 @@
+<mat-card class="card-style">
+    <mat-card-header class="card-header">
+        <mat-card-title>Invoice List</mat-card-title>
+        <button mat-flat-button  color="primary" [routerLink]="['/invoice/create']" class="button-container">
+            <mat-icon>add</mat-icon>
+            <span class="button-text">Add Invoice</span>
+        </button>
+    </mat-card-header>
+    <mat-card-content>
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+  
+            <!-- Invoice Number Column -->
+            <ng-container matColumnDef="invoiceNumber">
+              <th mat-header-cell *matHeaderCellDef> Invoice No. </th>
+              <td mat-cell *matCellDef="let invoice"> {{ invoice.invoiceNumber }} </td>
+              
+            </ng-container>
+          
+            <!-- Customer Name Column -->
+            <ng-container matColumnDef="customerName">
+              <th mat-header-cell *matHeaderCellDef> Customer </th>
+              <td mat-cell *matCellDef="let invoice"> {{ invoice.customerName }} </td>
+              
+            </ng-container>
+          
+            <!-- Invoice Date Column -->
+            <ng-container matColumnDef="invoiceDate">
+              <th mat-header-cell *matHeaderCellDef> Date </th>
+              <td mat-cell *matCellDef="let invoice"> {{ invoice.invoiceDate | date:'short' }} </td>
+              
+            </ng-container>
+          
+            <!-- Total Amount Column -->
+            <ng-container matColumnDef="total">
+              <th mat-header-cell *matHeaderCellDef> Total </th>
+              <td mat-cell *matCellDef="let invoice"> {{ invoice.total | currency }} </td>
+              
+            </ng-container>
+          
+            <!-- Tax Column -->
+            <ng-container matColumnDef="tax">
+              <th mat-header-cell *matHeaderCellDef> Tax </th>
+              <td mat-cell *matCellDef="let invoice"> {{ invoice.tax | currency }} </td>
+              
+            </ng-container>
+          
+            <!-- Net Total Column -->
+            <ng-container matColumnDef="netTotal">
+              <th mat-header-cell *matHeaderCellDef> Net Total </th>
+              <td mat-cell *matCellDef="let invoice"> {{ invoice.netTotal | currency }} </td>
+              
+            </ng-container>
+
+            <ng-container matColumnDef="action">
+              <th mat-header-cell *matHeaderCellDef>Action</th>
+              <td mat-cell *matCellDef="let invoice"> 
+                <button mat-icon-button color="primary" [routerLink]="['/invoice/edit', invoice.id]" routerLinkActive="router-link-active"  style="margin-left: 5px;"><mat-icon>edit</mat-icon></button>  
+                <button mat-icon-button color="primary" (click)="deleteInvoice(invoice.id)" style="margin-left: 5px;"><mat-icon>delete</mat-icon></button>  
+              </td>
+            </ng-container>
+          
+            <!-- Table Header & Row Definitions -->
+             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+             <tr mat-row *matRowDef="let invoice; columns: displayedColumns;"></tr>
+            <!-- <tbody>
+                <tr *ngIf="dataSource?.data?.length === 0">
+                    <h1>No data found</h1>
+                    <td [attr.colspan]="displayedColumns.length" class="no-data-found">No data found</td>
+                </tr>
+            </tbody> -->
+
+          </table>
+          
+    </mat-card-content>
+</mat-card>
